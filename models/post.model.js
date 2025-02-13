@@ -18,7 +18,7 @@ const postSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// creating indexs on title and description for searching
+// creating indexs on title for searching
 postSchema.index({title:"text"});
 
 const Post = mongoose.model("Post", postSchema);

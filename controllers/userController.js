@@ -1,31 +1,12 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-
 import User from "../models/User.model.js";
 
+// user registration
 const Register = async (req, res) => {
   const { username, name, email, password } = req.body;
   // console.log(username, name, email, password);
 
-  //   validating fields
-  if (!username || !name || !email || !password) {
-    const missingFields = [];
-    if (!username) missingFields.push("Username");
-    if (!name) missingFields.push("Name");
-    if (!email) missingFields.push("Email");
-    if (!password) missingFields.push("Password");
-    
-    const messages = missingFields.length > 0 
-      ? `${missingFields.slice(0, -1).join(", ")}${missingFields.length > 1 ? " and " : ""}${missingFields.slice(-1)} are Required!` 
-      : "";
-    
-    // console.log(messages);
-    
-    return res.json({
-      message: messages,
-      success: false,
-    });
-  }
   try {
     const existingUser = await User.findOne({ email });
     if (existingUser) {
@@ -33,7 +14,7 @@ const Register = async (req, res) => {
         message: "User Already exist,Please Login",
         success: false,
         error: true,
-        status:401
+        status:403
       });
     }
 
@@ -68,20 +49,6 @@ const Register = async (req, res) => {
 // login
 const Login = async (req, res) => {
   const { email, password } = req.body;
-
-  if (!password || !email) {
-    return res.json({
-      message: `${
-        !email && !password
-          ? "Email And Password"
-          : !email
-          ? "Email"
-          : "Password"
-      } Is Required !`,
-      success: false,
-      error: true,
-    });
-  }
   try {
     const userCheckingIndatabase = await User.findOne({ email });
     if (!userCheckingIndatabase) {
@@ -151,6 +118,7 @@ const Logout = async (req, res) => {
   }
 };
 
+// get All user
 const getAllUserList = async(req,res)=>{
   try {
     const userList = await User.find().select('-password -_id -createdAt -updatedAt -__v');

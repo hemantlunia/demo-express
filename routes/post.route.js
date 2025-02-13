@@ -13,6 +13,3 @@ postRoute.get("/search",searchPost)
 
 export default postRoute;
 
-
-
-// "postId":"67ad9c70772085eb17834182"

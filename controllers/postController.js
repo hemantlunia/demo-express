@@ -10,21 +10,6 @@ const createPost = async (req, res) => {
     const { id } = req.user;
     // console.log("id", id);
 
-    if (!title || !description) {
-      return res.json({
-        message: `${
-          !title && !description
-            ? "title And description"
-            : !title
-            ? "Title"
-            : "description"
-        } Is Required !`,
-        success: false,
-        error: true,
-        status: 400,
-      });
-    }
-
     const user = await User.findById(id);
     if (!user) {
       return res.json({
@@ -66,11 +51,9 @@ const addComment = async (req, res) => {
     const {postId} = req.params;
     const userId = req.user.id;
 
-    if (!postId || !text) {
+    if (!text) {
       return res.status(400).json({
-        message: `${
-          !postId && !text ? "postId And text" : !postId ? "postId" : "text"
-        } Is Required !`,
+        message: `Text is required to comment`,
         success: false,
       });
     }
@@ -111,29 +94,19 @@ const addComment = async (req, res) => {
 // updatePost
 const updatePost = async (req, res) => {
   try {
-    const { postId } = req.params;
-    // console.log("postId",postId);
-    
+    const { postId } = req.params;    
     const { title, description } = req.body;
-    const userId = req.user?.id;
-    // console.log("userId",userId);
-    
+    const userId = req.user?.id;    
 
-    if (!postId) {
+    if (!postId || !userId) {
       return res.json({
-        message: "postId not found, Try again!",
+        message: !postId
+          ? "postId not found, Try again...!"
+          : "userId not found to update...!",
         success: false,
         status: 401,
       });
     }
-    if (!userId) {
-      return res.json({
-        message: "userId not found to update...!",
-        success: false,
-        status: 401,
-      });
-    }
-
     const post = await Post.findById(postId);
     if (!post) {
       return res.json({
@@ -142,7 +115,6 @@ const updatePost = async (req, res) => {
         status: 401,
       });
     }
-
     if (post.postBy.toString() !== userId) {
       return res.json({
         message: "You are not authorized to update this post!",
@@ -182,16 +154,11 @@ const deletePost = async (req, res) => {
     const { postId } = req.params;
     const userId = req.user?.id;
 
-    if (!postId) {
+    if (!postId || !userId) {
       return res.json({
-        message: "postId not found, Try again!",
-        success: false,
-        status: 401,
-      });
-    }
-    if (!userId) {
-      return res.json({
-        message: "userId not found to delete...!",
+        message: !postId
+          ? "postId not found, Try again...!"
+          : "userId not found to deletePost...!",
         success: false,
         status: 401,
       });
@@ -205,10 +172,6 @@ const deletePost = async (req, res) => {
         status: 401,
       });
     }
-    console.log("ok1");
-    
-    console.log("postId deleting controll",post);
-    console.log("ok2");
     
     if (post.postBy.toString() !== userId) {
       return res.json({
@@ -270,7 +233,7 @@ const allPosts = async (req, res) => {
   }
 };
 
-// searchPostby Title/description
+// searchPostby Title
 const searchPost = async (req, res) => {
   try {
     const { searchValue } = req.body;
@@ -294,8 +257,8 @@ const searchPost = async (req, res) => {
 
     return res.json({
       message: "matching posts found...",
-      success: true,
       data: searchedPost,
+      success: true,
       status: 200,
     });
   } catch (error) {

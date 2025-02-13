@@ -29,7 +29,8 @@ const validationFields = (fields) => {
         .escape()
         .notEmpty()
         .withMessage("Name is Required!")
-        .isAlpha().withMessage("Name can be only letters!")
+        .isAlpha()
+        .withMessage("Name can be only letters!")
     );
   }
   if (fields.includes("password")) {
@@ -43,11 +44,7 @@ const validationFields = (fields) => {
   }
   if (fields.includes("title")) {
     validate.push(
-      body("title")
-        .trim()
-        .escape()
-        .notEmpty()
-        .withMessage("Title is Required!")
+      body("title").trim().escape().notEmpty().withMessage("Title is Required!")
     );
   }
   if (fields.includes("description")) {
@@ -61,35 +58,32 @@ const validationFields = (fields) => {
   }
 
   return validate;
-
 };
 
-
-const validateresult = (req,res,next)=>{
-    const error = validationResult(req);
-    if (!error.isEmpty()) {
-        return res.json({
-            success:false,
-            error:error.array(),
-            status:403
-        })
-    }
-    next();
+const validateresult = (req, res, next) => {
+  const error = validationResult(req);
+  if (!error.isEmpty()) {
+    return res.json({
+      success: false,
+      error: error.array(),
+      status: 403,
+    });
+  }
+  next();
 };
 
 // senitizing fields
 const sanitizeInput = (req, res, next) => {
-    if (req.body.username) req.body.username = req.sanitize(req.body.username);
-    if (req.body.name) req.body.name = req.sanitize(req.body.name);
-    if (req.body.email) req.body.email = req.sanitize(req.body.email);
-    if (req.body.password) req.body.password = req.sanitize(req.body.password);
-    if (req.body.title) req.body.title = req.sanitize(req.body.title);
-    if (req.body.description) req.body.description = req.sanitize(req.body.description);
-    if (req.body.text) req.body.text = req.sanitize(req.body.text);
-    
-    
-    next();
-  };
-  
+  if (req.body.username) req.body.username = req.sanitize(req.body.username);
+  if (req.body.name) req.body.name = req.sanitize(req.body.name);
+  if (req.body.email) req.body.email = req.sanitize(req.body.email);
+  if (req.body.password) req.body.password = req.sanitize(req.body.password);
+  if (req.body.title) req.body.title = req.sanitize(req.body.title);
+  if (req.body.description)
+    req.body.description = req.sanitize(req.body.description);
+  if (req.body.text) req.body.text = req.sanitize(req.body.text);
 
-export {validateresult,validationFields,sanitizeInput}
+  next();
+};
+
+export { validateresult, validationFields, sanitizeInput };

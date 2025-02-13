@@ -1,12 +1,11 @@
 import jwt from "jsonwebtoken";
 
+
 const authMiddleware = async(req, res, next) => {
-    console.log("middleware run");
+    // console.log("middleware running");
     
   try {
-    const { userToken } = req.cookies;
-    // console.log("userToken", userToken);
-    
+    const { userToken } = req.cookies;    
 
     if (!userToken) {
       return res.json({
@@ -24,9 +23,7 @@ const authMiddleware = async(req, res, next) => {
           error: true,
         });
       }
-      req.user = decoded;
-      console.log("tokenid", req.user);
-      
+      req.user = decoded;      
       next();
     });
   } catch (error) {
