@@ -5,7 +5,7 @@ import { validateresult, validationFields } from "../utils/inputValidations.js";
 const postRoute = express.Router();
 
 postRoute.post("/createPost",validationFields(["title","description"]),validateresult,createPost);
-postRoute.post("/addComment",addComment);
+postRoute.post("/addComment/:postId",addComment);
 postRoute.put("/updatePost/:postId",updatePost);
 postRoute.delete("/deletePost/:postId",deletePost);
 postRoute.get("/allPosts",allPosts)

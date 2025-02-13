@@ -62,7 +62,8 @@ const createPost = async (req, res) => {
 // Adding Comment
 const addComment = async (req, res) => {
   try {
-    const { postId, text } = req.body;
+    const { text } = req.body;
+    const {postId} = req.params;
     const userId = req.user.id;
 
     if (!postId || !text) {
