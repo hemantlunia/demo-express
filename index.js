@@ -18,8 +18,8 @@ app.use(expressSanitizer());
 app.use("/api/user",sanitizeInput,userRouter);
 app.use("/api/post",sanitizeInput,authMiddleware,postRoute);
 
-// app.get("/",authMiddleware, (req, res) => {
-//   res.send("home page");
-// });
+app.get("/", (req, res) => {
+  res.send("home page");
+});
 
 app.listen(8080);
