@@ -13,12 +13,13 @@ const postSchema = new mongoose.Schema(
         }
     ],
     postBy: { type: mongoose.Types.ObjectId,ref:"User",required:true },
+    postByUsername:{type:String,required:true}
   },
   { timestamps: true }
 );
 
 // creating indexs on title and description for searching
-postSchema.index({title:"text",description:"text"});
+postSchema.index({title:"text"});
 
 const Post = mongoose.model("Post", postSchema);
 

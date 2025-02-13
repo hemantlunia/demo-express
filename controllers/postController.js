@@ -38,6 +38,7 @@ const createPost = async (req, res) => {
       title,
       description,
       postBy: user._id,
+      postByUsername:user.username,
       comment: [],
     });
 
@@ -110,8 +111,12 @@ const addComment = async (req, res) => {
 const updatePost = async (req, res) => {
   try {
     const { postId } = req.params;
+    // console.log("postId",postId);
+    
     const { title, description } = req.body;
     const userId = req.user?.id;
+    // console.log("userId",userId);
+    
 
     if (!postId) {
       return res.json({
@@ -120,7 +125,7 @@ const updatePost = async (req, res) => {
         status: 401,
       });
     }
-    if (userId) {
+    if (!userId) {
       return res.json({
         message: "userId not found to update...!",
         success: false,
@@ -183,7 +188,7 @@ const deletePost = async (req, res) => {
         status: 401,
       });
     }
-    if (userId) {
+    if (!userId) {
       return res.json({
         message: "userId not found to delete...!",
         success: false,
@@ -199,7 +204,11 @@ const deletePost = async (req, res) => {
         status: 401,
       });
     }
-
+    console.log("ok1");
+    
+    console.log("postId deleting controll",post);
+    console.log("ok2");
+    
     if (post.postBy.toString() !== userId) {
       return res.json({
         message: "You are not authorized to Delete this post!",
@@ -211,7 +220,7 @@ const deletePost = async (req, res) => {
     const deletedPost = await Post.findByIdAndDelete(postId);
 
     return res.json({
-      message: "Post updated successfully...!",
+      message: "Post delete successfully...!",
       success: true,
       data: deletedPost,
     });
@@ -228,7 +237,7 @@ const deletePost = async (req, res) => {
 // All Post find
 const allPosts = async (req, res) => {
   try {
-    const { userId } = req.user.id;
+    const userId  = req.user.id;
     if (!userId) {
       return res.json({
         message: "user Not found, Please Login...!",

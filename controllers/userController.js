@@ -5,12 +5,11 @@ import User from "../models/User.model.js";
 
 const Register = async (req, res) => {
   const { username, name, email, password } = req.body;
-  console.log(username, name, email, password);
+  // console.log(username, name, email, password);
 
-  //   validating
+  //   validating fields
   if (!username || !name || !email || !password) {
     const missingFields = [];
-
     if (!username) missingFields.push("Username");
     if (!name) missingFields.push("Name");
     if (!email) missingFields.push("Email");
@@ -34,6 +33,7 @@ const Register = async (req, res) => {
         message: "User Already exist,Please Login",
         success: false,
         error: true,
+        status:401
       });
     }
 
@@ -51,7 +51,7 @@ const Register = async (req, res) => {
     return res.json({
       message: "User Created Successfully",
       success: true,
-      data: { name: name, email: email },
+      data: { name: name, email: email, userId: newUser._id },
       status: 201,
     });
   } catch (error) {
@@ -151,4 +151,30 @@ const Logout = async (req, res) => {
   }
 };
 
-export { Logout, Register, Login };
+const getAllUserList = async(req,res)=>{
+  try {
+    const userList = await User.find().select('-password -_id -createdAt -updatedAt -__v');
+    if (userList.length === 0) {
+      return res.json({
+        message:"userList not found...",
+        success:false,
+        status:401
+      })
+    }
+
+    return res.json({
+      message:"Userlist fetched successfully!",
+      success:true,
+      data:userList,
+      status:200
+    })
+  } catch (error) {
+    return res.json({
+      message:"Error while fetching UserList data!",
+      success:false,
+      status:500
+    })
+  }
+}
+
+export { Logout, Register, Login, getAllUserList };
